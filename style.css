@@ -1,0 +1,63 @@
+*,
+*::before,
+*::after {
+  box-sizing: content-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 95%;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+button {
+  font-size: inherit;
+  width: 100px;
+  height: 25px;
+  border-radius: 12px;
+}
+
+button:hover {
+  background-color: gray;
+}
+
+button:active {
+  background-color: black;
+}
+
+body {
+  /* height: 100vh; */
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.container {
+  height: 50vh;
+  width: 50vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+div {
+  /* border: 2px solid black; */
+}
+
+.container div {
+  /* padding: 10px; */
+  font-size: 55px;
+  display: flex;
+  justify-content: center;
+  border: 2px solid black;
+}

@@ -1,241 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe</title>
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: content-box;
-            margin: 0;
-            padding: 0;
-        }
+      *,
+      *::before,
+      *::after {
+        box-sizing: content-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        html,
-        body {
-            height: 100%;
-            font-family: system-ui, sans-serif;
-            line-height: 1.5;
-        }
+      html,
+      body {
+        height: 95%;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+      }
 
-        a {
-            text-decoration: none;
-            color: black;
-        }
+      a {
+        text-decoration: none;
+        color: black;
+      }
 
-        button {
-            font-size: inherit;
-            width: 100px;
-            height: 25px;
-            border-radius: 12px;
-        }
+      button {
+        font-size: inherit;
+        width: 100px;
+        height: 25px;
+        border-radius: 12px;
+      }
 
-        button:hover {
-            background-color: gray;
-        }
+      button:hover {
+        background-color: gray;
+      }
 
-        button:active {
-            background-color: black;
-        }
+      button:active {
+        background-color: black;
+      }
 
-        body {
-            /* height: 100vh; */
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
+      body {
+        /* height: 100vh; */
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
 
-        .container {
-            height: 50vh;
-            width: 50vw;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
-        }
+      .container {
+        height: 50vh;
+        width: 50vw;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+      }
 
-        div {
-            border: 2px solid black;
-        }
+      div {
+        /* border: 2px solid black; */
+      }
 
-        .container div {
-            /* padding: 10px; */
-            font-size: 55px;
-            display: flex;
-            justify-content: center;
-        }
+      .container div {
+        /* padding: 10px; */
+        font-size: 55px;
+        display: flex;
+        justify-content: center;
+        border: 2px solid black;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <form id="player-info">
-        <label for="first">Player 1:</label>
-        <input type="text" name="player1" id="player1" value="player 1">
+      <label for="first">Player 1:</label>
+      <input type="text" name="player1" id="player1" value="player 1" />
 
-        <label for="second">Player 2:</label>
-        <input type="text" name="player2" id="player2" value="player 2">
-
+      <label for="second">Player 2:</label>
+      <input type="text" name="player2" id="player2" value="player 2" />
     </form>
     <div>
-        <button onclick="handlePlaying()">Play</button>
-        <button onclick="handleRestart()">Restart</button>
-        <button onclick="handleStop()">Stop</button>
+      <button onclick="handlePlaying()">Play</button>
+      <button onclick="handleRestart()">Restart</button>
+      <button onclick="handleStop()">Stop</button>
     </div>
     <div class="container">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
     <div class="display" id="display"></div>
     <!-- <script src="./script.js"></script> -->
     <script>
+      function Player(name, symbol) {
+        this.name = name;
+        this.symbol = symbol;
+      }
 
+      function Game(p1, p2) {
+        const player1 = new Player(p1, "X");
+        const player2 = new Player(p2, "O");
+        let turn = player2;
+        const boardHTML = document.querySelectorAll(".container div");
+        const msg = document.querySelector(".display");
+        let gameOver = false;
+        let ct = 0;
 
-        function Player(name, symbol) {
-            this.name = name;
-            this.symbol = symbol;
-        }
-
-
-
-        function Game(p1, p2) {
-            const player1 = new Player(p1, "X");
-            const player2 = new Player(p2, 'O');
-            let turn = player2;
-            const boardHTML = document.querySelectorAll(".container div");
-            const msg = document.querySelector(".display");
-            let gameOver = false;
-            let ct = 0;
-
-            let GameBoard = (function () {
-                let board = [];
-                for (let i = 0; i < 9; i++) {
-                    board[i] = " ";
-
-                }
-                return board;
-            })();
-
-            function check() {
-                ct++;
-                const wins = [
-                    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-                    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-                    [0, 4, 8], [2, 4, 6]             // diagonals
-                ];
-
-                for (let [a, b, c] of wins) {
-                    if (GameBoard[a] !== " " && GameBoard[a] === GameBoard[b] && GameBoard[a] === GameBoard[c]) {
-                        msg.textContent = `!!! WINEER IS player: ${turn.name} with ${turn.symbol} !!!`;
-                        gameOver = true;
-                        return true;
-                    }
-                }
-                if (ct === 9) {
-                    msg.textContent = `!!! IT'S DRAW MATCH !!!`;
-                    return true
-                }
-
-                return false;
-
-            }
-
-            function destroy() {
-                msg.textContent = "";
-            }
-
-            function displayMsg() {
-                if (turn == player1) turn = player2;
-                else turn = player1
-                msg.textContent = `Turn of player: ${turn.name} with ${turn.symbol}`;
-
-            }
-            displayMsg();
-
-            function render() {
-                boardHTML.forEach((e, i) => {
-                    e.textContent = GameBoard[i];
-                });
-                if (check());
-                else displayMsg();
-            }
-            function nextMove(k) {
-                if (k < 0 || k > 8 || gameOver || GameBoard[k] != " ") return;
-                GameBoard[k] = turn.symbol;
-
-                render();
-            }
-
-            function reset() {
-                for (let i = 0; i < 9; i++) {
-                    GameBoard[i] = " ";
-                }
-                turn = player2;
-                render();
-                gameOver = false;
-                ct = 0;
-                destroy();
-            }
-            return { nextMove, render, reset };
-        }
-
-        let controls=(function (){
-
-            let game = null;
-
-            function handlePlaying() {
-                if (game !== null) return;
-                const playersName = document.querySelectorAll("#player-info input");
-                playersName.forEach(element => {
-                    element.readOnly = true;
-                });
-
-                game = new Game(playersName[0].value, playersName[1].value);
-
-                const container = document.querySelector(".container");
-
-                container.addEventListener('click', function (event) {
-                    const click = event.target;
-
-                    const children = Array.from(container.children);
-
-                    const index = children.indexOf(click);
-                    game.nextMove(index);
-
-                })
-
-            }
-            function handleStop() {
-                if (game === null) return;
-                const playersName = document.querySelectorAll("#player-info input");
-                playersName.forEach(element => {
-                    element.readOnly = false;
-                });
-                game.reset();
-                game = null;
-            }
-
-            function handleRestart() {
-                if (game === null) return;
-                game.reset();
-            }
-            return {handlePlaying,handleRestart,handleStop};
+        let GameBoard = (function () {
+          let board = [];
+          for (let i = 0; i < 9; i++) {
+            board[i] = " ";
+          }
+          return board;
         })();
-        window.handlePlaying=controls.handlePlaying;
-        window.handleRestart=controls.handleRestart;
-        window.handleStop=controls.handleStop;
 
+        function check() {
+          ct++;
+          const wins = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8], // rows
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8], // columns
+            [0, 4, 8],
+            [2, 4, 6], // diagonals
+          ];
+
+          for (let [a, b, c] of wins) {
+            if (
+              GameBoard[a] !== " " &&
+              GameBoard[a] === GameBoard[b] &&
+              GameBoard[a] === GameBoard[c]
+            ) {
+              msg.textContent = `!!! WINEER IS player: ${turn.name} with ${turn.symbol} !!!`;
+              gameOver = true;
+              return true;
+            }
+          }
+          if (ct === 9) {
+            msg.textContent = `!!! IT'S DRAW MATCH !!!`;
+            return true;
+          }
+
+          return false;
+        }
+
+        function destroy() {
+          msg.textContent = "";
+        }
+
+        function displayMsg() {
+          if (turn == player1) turn = player2;
+          else turn = player1;
+          msg.textContent = `Turn of player: ${turn.name} with ${turn.symbol}`;
+        }
+        displayMsg();
+
+        function render() {
+          boardHTML.forEach((e, i) => {
+            e.textContent = GameBoard[i];
+          });
+          if (check());
+          else displayMsg();
+        }
+        function nextMove(k) {
+          if (k < 0 || k > 8 || gameOver || GameBoard[k] != " ") return;
+          GameBoard[k] = turn.symbol;
+
+          render();
+        }
+
+        function reset() {
+          for (let i = 0; i < 9; i++) {
+            GameBoard[i] = " ";
+          }
+          turn = player1;
+          render();
+          gameOver = false;
+          ct = 0;
+          displayMsg();
+        }
+        return { nextMove, render, reset, destroy };
+      }
+
+      let controls = (function () {
+        let game = null;
+
+        function handlePlaying() {
+          if (game !== null) return;
+          const playersName = document.querySelectorAll("#player-info input");
+          playersName.forEach((element) => {
+            element.readOnly = true;
+          });
+
+          game = new Game(playersName[0].value, playersName[1].value);
+
+          const container = document.querySelector(".container");
+
+          container.addEventListener("click", function (event) {
+            const click = event.target;
+
+            const children = Array.from(container.children);
+
+            const index = children.indexOf(click);
+            game.nextMove(index);
+          });
+        }
+        function handleStop() {
+          if (game === null) return;
+          const playersName = document.querySelectorAll("#player-info input");
+          playersName.forEach((element) => {
+            element.readOnly = false;
+          });
+          game.reset();
+          game.destroy();
+          game = null;
+        }
+
+        function handleRestart() {
+          if (game === null) return;
+          game.reset();
+        }
+        return { handlePlaying, handleRestart, handleStop };
+      })();
+      window.handlePlaying = controls.handlePlaying;
+      window.handleRestart = controls.handleRestart;
+      window.handleStop = controls.handleStop;
     </script>
-</body>
-
+  </body>
 </html>
